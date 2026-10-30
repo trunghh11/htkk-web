@@ -3,166 +3,123 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HTKK PDF Editor</title>
-
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
   font:15px system-ui,Arial,sans-serif;
   background:#f4f6fb;
-  color:#18263b;
+  color:#18263b
 }
-main{
-  max-width:1100px;
-  margin:30px auto;
-  padding:0 16px;
-}
-h1{font-size:26px}
+main{max-width:1100px;margin:28px auto;padding:0 16px}
+h1{font-size:25px}
 section{
-  background:white;
+  background:#fff;
   border:1px solid #dae2ed;
-  border-radius:14px;
+  border-radius:12px;
   padding:20px;
-  margin:14px 0;
+  margin:14px 0
 }
-label{
-  display:block;
-  font-weight:600;
-  margin:8px 0 5px;
-}
-input,select,button{
-  font:inherit;
-  padding:10px;
-  border:1px solid #b9c8d8;
-  border-radius:8px;
-  max-width:100%;
-}
-input[type=text],
-input[type=date]{
-  width:100%;
-}
-button{
-  background:#155ca5;
-  color:white;
-  cursor:pointer;
-  border:0;
-}
-button:disabled{opacity:.5}
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:16px
 }
-.muted{
-  color:#5e7088;
-  font-size:13px;
+label{display:block;font-weight:600;margin:8px 0 6px}
+input,select,button{
+  font:inherit;padding:10px;border-radius:7px;
+  border:1px solid #bac8d8;max-width:100%
 }
+input[type=text],input[type=date],select{width:100%}
+button{
+  background:#155ca5;color:white;
+  border:0;cursor:pointer
+}
+button:disabled{opacity:.5;cursor:wait}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.muted{font-size:13px;color:#64748b}
 .warn{
-  background:#fff8e6;
-  padding:12px;
-  border-radius:8px;
+  background:#fff7e6;border:1px solid #f2d69a;
+  padding:12px;border-radius:8px
 }
 .status{
-  white-space:pre-wrap;
-  background:#edf3fa;
-  padding:12px;
-  border-radius:8px;
-  min-height:38px;
+  background:#eef3fa;padding:12px;border-radius:8px;
+  white-space:pre-wrap;min-height:45px
 }
-table{
-  border-collapse:collapse;
-  width:100%;
-}
-td,th{
-  border-bottom:1px solid #e1e6ef;
-  padding:8px;
-  text-align:left;
+table{border-collapse:collapse;width:100%}
+th,td{
+  border-bottom:1px solid #e2e8f0;
+  padding:8px;text-align:left
 }
 td input{width:100%}
 canvas{
-  max-width:100%;
-  border:1px solid #ccd3dd;
-}
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+  max-width:100%;height:auto;
+  border:1px solid #ccd3dd;background:white
 }
 </style>
 </head>
-
 <body>
 <main>
 
-<h1>Chỉnh trực tiếp văn bản PDF tờ khai HTKK</h1>
-
+<h1>HTKK PDF Editor</h1>
 <p class="muted">
-Mẫu chuẩn: GTGT-Q3-2013-1.pdf (2 trang).
-Thay lệnh vẽ văn bản cũ trong PDF bằng văn bản mới.
-Font Times New Roman Bold và Italic.
+Mẫu chuẩn: GTGT.pdf · 2 trang · Times New Roman
 </p>
 
-<section class="warn">
-<b>Lưu ý:</b>
-Chỉ xử lý file có cấu trúc giống PDF mẫu.
-PDF đã ký số sẽ mất hiệu lực chữ ký khi sửa.
-Việc chỉnh sửa PDF không thay đổi XML hoặc tờ khai đã nộp.
-</section>
+<div class="warn">
+<b>Lưu ý:</b> Chỉ hỗ trợ cấu trúc PDF giống file GTGT.pdf
+đã cung cấp. Không sử dụng để sửa tờ khai đã ký số.
+Việc sửa PDF không thay đổi dữ liệu kê khai trong HTKK
+hoặc hồ sơ đã nộp cơ quan thuế.
+</div>
 
 <section>
+<h2>1. Chọn tài liệu</h2>
 <div class="grid">
-
 <div>
 <label>Chế độ</label>
 <select id="mode">
-<option value="one">Một file</option>
-<option value="batch">Hàng loạt</option>
+<option value="one">Chỉnh một file</option>
+<option value="batch">Chỉnh hàng loạt</option>
 </select>
 </div>
-
 <div>
-<label>Chọn PDF</label>
+<label>Chọn file PDF</label>
 <input id="files" type="file"
-       accept="application/pdf,.pdf" multiple>
+       accept=".pdf,application/pdf" multiple>
 </div>
-
 <div>
 <label>Font chữ</label>
-<p class="muted">
-Tự động sử dụng:
-<br>fonts/timesbd.ttf
-<br>fonts/timesi.ttf
-</p>
+<div class="muted">
+Kỳ tính thuế: Times New Roman Regular<br>
+Ngày ký: Times New Roman Italic<br>
+Tự tải từ thư mục fonts/
 </div>
-
+</div>
 </div>
 </section>
 
 <section>
-<h2>Giá trị chỉnh sửa</h2>
-
+<h2>2. Giá trị thay thế</h2>
 <div class="grid">
 <div>
 <label>Kỳ tính thuế mới</label>
 <input id="period" type="text"
        value="Quý 4 năm 2013">
 </div>
-
 <div>
 <label>Ngày ký mới</label>
 <input id="date" type="date"
        value="2014-01-30">
 </div>
 </div>
-
 <p class="muted">
-Có thể nhập giá trị riêng cho từng file.
-Nếu để trống, chương trình sử dụng giá trị chung.
+Có thể đặt giá trị riêng cho từng file.
+Để trống sẽ dùng giá trị chung.
 </p>
-
-<div style="overflow:auto">
+<div style="overflow-x:auto">
 <table>
 <thead>
 <tr>
@@ -177,25 +134,19 @@ Nếu để trống, chương trình sử dụng giá trị chung.
 </section>
 
 <section>
-<h2>Kiểm tra và xuất</h2>
-
+<h2>3. Xem trước và xuất</h2>
 <div class="actions">
-<button id="run">Chỉnh sửa & tải kết quả</button>
-<button id="preview" type="button">
-Xem trước PDF đầu tiên
-</button>
+<button id="preview">Xem trước PDF đầu tiên</button>
+<button id="run">Chỉnh sửa và tải kết quả</button>
 </div>
-
 <p id="status" class="status">
 Chọn PDF để bắt đầu.
 </p>
-
 <div class="grid">
 <div>
 <h3>Trang 1</h3>
 <canvas id="p1"></canvas>
 </div>
-
 <div>
 <h3>Trang 2</h3>
 <canvas id="p2"></canvas>
@@ -204,11 +155,9 @@ Chọn PDF để bắt đầu.
 </section>
 
 <p class="muted">
-Chạy trên GitHub Pages.
-Các thư viện JavaScript tải từ CDN.
-PDF được xử lý trong trình duyệt.
+Chạy trên GitHub Pages. Thư viện được tải qua Internet.
+Tệp PDF được xử lý trong trình duyệt.
 </p>
-
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -217,465 +166,531 @@ PDF được xử lý trong trình duyệt.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
-const $ = id => document.getElementById(id);
-const status = text => $('status').textContent = text;
+"use strict";
 
+const $ = id => document.getElementById(id);
+const status = s => $('status').textContent = s;
 let fileList = [];
 
-$('files').onchange = () => {
-  fileList = Array.from($('files').files);
-  $('rows').innerHTML = '';
-
-  fileList.forEach((file,i) => {
-    const tr = document.createElement('tr');
-
-    tr.innerHTML = `
-      <td></td>
-      <td>
-        <input type="text"
-               placeholder="Dùng giá trị chung"
-               id="period${i}">
-      </td>
-      <td>
-        <input type="date" id="date${i}">
-      </td>
-    `;
-
-    tr.firstElementChild.textContent = file.name;
-    $('rows').append(tr);
-  });
-
-  status(`Đã chọn ${fileList.length} PDF`);
+const MODEL = {
+  width:612,
+  height:792,
+  period:{
+    page:0,
+    baseline:100.68,
+    xMin:193.5,
+    xMax:327,
+    originalFonts:['F1','F2'],
+    originalMin:12,
+    size:9.33,
+    center:259.9
+  },
+  date:{
+    page:1,
+    baseline:154.32,
+    xMin:416,
+    xMax:525,
+    originalFonts:['F3'],
+    originalMin:10,
+    size:9.33,
+    x:416.76
+  }
 };
 
+$('files').addEventListener('change',()=>{
+  fileList=Array.from($('files').files);
+  $('rows').innerHTML='';
+
+  fileList.forEach((file,i)=>{
+    const tr=document.createElement('tr');
+    const td=document.createElement('td');
+    td.textContent=file.name;
+    tr.appendChild(td);
+
+    const p=document.createElement('td');
+    const pi=document.createElement('input');
+    pi.type='text';
+    pi.id='period'+i;
+    pi.placeholder='Dùng giá trị chung';
+    p.appendChild(pi);
+    tr.appendChild(p);
+
+    const d=document.createElement('td');
+    const di=document.createElement('input');
+    di.type='date';
+    di.id='date'+i;
+    d.appendChild(di);
+    tr.appendChild(d);
+
+    $('rows').appendChild(tr);
+  });
+
+  status('Đã chọn '+fileList.length+' PDF.');
+});
+
 function check(){
-  if(
-    !window.PDFLib ||
-    !window.pdfjsLib ||
-    !window.JSZip ||
-    !window.fontkit
-  ){
+  if(!window.PDFLib ||
+     !window.pdfjsLib ||
+     !window.fontkit ||
+     !window.JSZip){
     throw Error(
-      'Không tải được thư viện JavaScript. Kiểm tra Internet.'
+      'Không tải được thư viện. Kiểm tra Internet.'
     );
   }
 }
 
-function dt(s){
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
-
-  if(!m){
-    throw Error('Ngày ký không hợp lệ');
-  }
-
-  const year = Number(m[1]);
-  const month = Number(m[2]);
-  const day = Number(m[3]);
-  const d = new Date(Date.UTC(year,month-1,day));
-
-  if(
-    d.getUTCFullYear() !== year ||
-    d.getUTCMonth() !== month-1 ||
-    d.getUTCDate() !== day
-  ){
-    throw Error('Ngày ký không hợp lệ');
-  }
-
-  return `Ngày ${day} tháng ${month} năm ${year}`;
-}
-
-// TỰ ĐỘNG TẢI TIMES NEW ROMAN TỪ GITHUB PAGES
 async function fonts(){
-
-  async function loadFont(filename){
-    const response = await fetch(
-      './fonts/' + filename
-    );
-
-    if(!response.ok){
+  async function load(name){
+    const r=await fetch('./fonts/'+name);
+    if(!r.ok){
       throw Error(
-        'Không tải được fonts/' + filename +
-        ' (HTTP ' + response.status + ')'
+        'Không tải được fonts/'+name+
+        ' (HTTP '+r.status+')'
       );
     }
-
-    return await response.arrayBuffer();
+    return new Uint8Array(await r.arrayBuffer());
   }
 
-  const [bold,italic] = await Promise.all([
-    loadFont('timesbd.ttf'),
-    loadFont('timesi.ttf')
+  const [regular,italic]=await Promise.all([
+    load('times.ttf'),
+    load('timesi.ttf')
   ]);
 
+  return {regular,italic};
+}
+
+function dateText(s){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if(!m)throw Error('Ngày ký không hợp lệ');
+
+  const y=+m[1],mo=+m[2],d=+m[3];
+  const test=new Date(Date.UTC(y,mo-1,d));
+
+  if(test.getUTCFullYear()!==y ||
+     test.getUTCMonth()!==mo-1 ||
+     test.getUTCDate()!==d){
+    throw Error('Ngày ký không hợp lệ');
+  }
+
+  return `Ngày ${d} tháng ${mo} năm ${y}`;
+}
+
+function values(i){
   return {
-    bold,
-    italic,
-    real:true
+    period:(
+      $('period'+i)?.value ||
+      $('period').value
+    ).trim(),
+    date:$('date'+i)?.value || $('date').value
   };
 }
 
-// Tọa độ theo PDF mẫu HTKK.
-// Chỉ xử lý khi nhận diện được cấu trúc tương ứng.
-const targets = [
-  {
-    page:0,
-    origin:[220.56,148.44],
-    text:'[01] Kỳ tính thuế:',
-    kind:'bold',
-    size:8.025
-  },
-  {
-    page:1,
-    origin:[385.92,182.88],
-    text:'Ngày ',
-    kind:'italic',
-    size:8.025
-  }
-];
+function normalize(s){
+  return s.replace(/\u0003/g,' ')
+          .replace(/\s+/g,' ')
+          .trim();
+}
 
-// Tìm và loại bỏ lệnh vẽ văn bản cũ.
-// Không sử dụng hình chữ nhật trắng để che.
-function removeOriginal(pdf,page,target){
+async function extractText(bytes){
+  const doc=await pdfjsLib.getDocument({
+    data:new Uint8Array(bytes),
+    disableFontFace:true
+  }).promise;
 
-  const refs = page.node.Contents();
-
-  if(!refs){
-    throw Error('Trang PDF không có content stream');
+  if(doc.numPages!==2){
+    throw Error('Mẫu PDF phải có đúng 2 trang.');
   }
 
-  const arr = refs instanceof PDFLib.PDFArray
+  const texts=[];
+
+  for(let i=1;i<=2;i++){
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    texts.push(
+      normalize(content.items.map(x=>x.str).join(' '))
+    );
+  }
+
+  await doc.destroy();
+  return texts;
+}
+
+function verifySource(texts){
+  if(!/\[01\]\s*Kỳ\s*tính\s*thuế\s*:/.test(texts[0])){
+    throw Error(
+      'Không tìm thấy mục [01] Kỳ tính thuế.'
+    );
+  }
+
+  if(!/Ngày\s+\d{1,2}\s+tháng\s+\d{1,2}\s+năm\s+\d{4}/.test(texts[1])){
+    throw Error(
+      'Không tìm thấy ngày ký ở trang 2.'
+    );
+  }
+}
+
+// Chỉ xử lý các nhóm q...Q độc lập của mẫu GTGT.
+// Không xóa mọi đoạn BT...ET trùng font.
+function removeText(pdf,page,target,kind){
+  const refs=page.node.Contents();
+
+  const arr=refs instanceof PDFLib.PDFArray
     ? Array.from(
         {length:refs.size()},
         (_,i)=>refs.get(i)
       )
     : [refs];
 
-  let matches = 0;
+  let original=0;
+  let edited=0;
+  const updates=[];
 
   for(const ref of arr){
-
-    const stream = pdf.context.lookup(ref);
+    const stream=pdf.context.lookup(ref);
 
     if(!(stream instanceof PDFLib.PDFRawStream)){
       continue;
     }
 
-    const raw = PDFLib.decodePDFRawStream(stream).decode();
-    const source = new TextDecoder('latin1').decode(raw);
+    const raw=PDFLib.decodePDFRawStream(stream).decode();
+    const source=new TextDecoder('latin1').decode(raw);
 
-    const pattern = /BT[\s\S]*?ET/g;
+    // Cấu trúc độc lập q ... BT ... ET ... Q
+    const pattern=/(^|\n)q\s*\n([\s\S]*?)\nQ(?=\s|$)/g;
 
-    const next = source.replace(pattern,block=>{
+    const next=source.replace(
+      pattern,
+      (full,prefix,body)=>{
 
-      const tm = block.match(
-        /1\s+0\s+0(?:\.0+)?\s+-1\s+([\d.]+)\s+([\d.]+)\s+Tm/
-      );
+        if(!/\bBT\b/.test(body) ||
+           !/\bET\b/.test(body)){
+          return full;
+        }
 
-      if(!tm){
-        return block;
+        const tm=body.match(
+          /1\s+0\s+0(?:\.0+)?\s+(-?1(?:\.0+)?)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+Tm/
+        );
+
+        if(!tm)return full;
+
+        const rawX=Number(tm[2]);
+        const rawY=Number(tm[3]);
+
+        const font=body.match(/\/(F\d+)\s+[\d.]+\s+Tf/);
+        if(!font)return full;
+
+        const cm=body.match(
+          /([\d.]+)\s+0(?:\.0+)?\s+0(?:\.0+)?\s+([\d.]+)\s+0(?:\.0+)?\s+0(?:\.0+)?\s+cm/
+        );
+
+        // Lệnh vẽ từ PDF HTKK gốc.
+        if(cm){
+          const sx=Number(cm[1]);
+          const sy=Number(cm[2]);
+
+          if(Math.abs(sx-0.037964)<0.0001 &&
+             Math.abs(sy-0.037964)<0.0001){
+
+            const x=rawX*sx*.75;
+            const y=rawY*sy*.75;
+
+            if(Math.abs(y-target.baseline)<0.5 &&
+               x>=target.xMin &&
+               x<=target.xMax &&
+               target.originalFonts.includes(font[1])){
+              original++;
+              return prefix;
+            }
+          }
+        }
+
+        // Lệnh vẽ do webapp tạo ở lần chỉnh trước.
+        // pdf-lib dùng tọa độ PDF trực tiếp.
+        if(/1\s+0\s+0\s+1\s+/.test(body)){
+          const expectedY=MODEL.height-target.baseline;
+
+          if(Math.abs(rawY-expectedY)<1 &&
+             rawX>=target.xMin-80 &&
+             rawX<=target.xMax+10 &&
+             /\bTj\b/.test(body)){
+            edited++;
+            return prefix;
+          }
+        }
+
+        return full;
       }
+    );
 
-      const x = Number(tm[1]) * .75;
-      const y = Number(tm[2]) * .75;
-
-      const fontName = target.kind === 'bold'
-        ? '/F3 '
-        : '/F4 ';
-
-      if(
-        block.includes(fontName) &&
-        Math.abs(x-target.origin[0]) < 1.5 &&
-        Math.abs(y-target.origin[1]) < 1.5
-      ){
-        matches++;
-        return '';
-      }
-
-      return block;
-    });
-
-    if(next !== source){
-
-      const newBytes = new Uint8Array(next.length);
-
-      for(let i=0;i<next.length;i++){
-        newBytes[i] = next.charCodeAt(i);
-      }
-
-      pdf.context.assign(
-        ref,
-        pdf.context.flateStream(newBytes)
-      );
+    if(next!==source){
+      updates.push({ref,next});
     }
   }
 
-  if(matches < 1){
+  // Chỉ chấp nhận mẫu gốc đủ số đoạn,
+  // hoặc đúng một đoạn do webapp tạo.
+  const validOriginal=
+    original>=target.originalMin &&
+    edited===0;
+
+  const validEdited=
+    original===0 &&
+    edited===1;
+
+  if(!validOriginal && !validEdited){
     throw Error(
-      `Không nhận diện duy nhất dòng ${target.text} ` +
-      `ở trang ${target.page+1} ` +
-      `(tìm thấy ${matches}). Không xuất PDF.`
+      'Không nhận diện an toàn '+kind+
+      ': '+original+' đoạn gốc, '+
+      edited+' đoạn đã sửa. Không xuất PDF.'
+    );
+  }
+
+  // Chỉ ghi thay đổi sau khi đã kiểm tra.
+  for(const u of updates){
+    const encoded=new Uint8Array(u.next.length);
+    for(let i=0;i<u.next.length;i++){
+      encoded[i]=u.next.charCodeAt(i);
+    }
+
+    pdf.context.assign(
+      u.ref,
+      pdf.context.flateStream(encoded)
     );
   }
 }
 
 async function edit(file,period,date,fontData){
+  if(!period)throw Error('Chưa nhập kỳ tính thuế.');
 
-  const pdf = await PDFLib.PDFDocument.load(
+  const original=new Uint8Array(
     await file.arrayBuffer()
   );
 
-  if(pdf.getPageCount() < 2){
-    throw Error('PDF phải có ít nhất 2 trang');
+  const texts=await extractText(original);
+  verifySource(texts);
+
+  const pdf=await PDFLib.PDFDocument.load(original);
+
+  if(pdf.getPageCount()!==2){
+    throw Error('PDF phải có đúng 2 trang.');
+  }
+
+  for(const page of pdf.getPages()){
+    if(Math.abs(page.getWidth()-612)>1 ||
+       Math.abs(page.getHeight()-792)>1){
+      throw Error(
+        'Kích thước trang khác mẫu GTGT.pdf.'
+      );
+    }
   }
 
   pdf.registerFontkit(fontkit);
 
-  const fBold = await pdf.embedFont(
-    fontData.bold,
-    {subset:true}
+  const regular=await pdf.embedFont(
+    fontData.regular,{subset:true}
+  );
+  const italic=await pdf.embedFont(
+    fontData.italic,{subset:true}
   );
 
-  const fItalic = await pdf.embedFont(
-    fontData.italic,
-    {subset:true}
+  const periodText='[01] Kỳ tính thuế: '+period;
+  const signingText=dateText(date);
+
+  // Loại bỏ lệnh vẽ chữ gốc trước.
+  removeText(
+    pdf,pdf.getPage(0),MODEL.period,
+    'kỳ tính thuế'
+  );
+  removeText(
+    pdf,pdf.getPage(1),MODEL.date,
+    'ngày ký'
   );
 
-  const txt = [
-    '[01] Kỳ tính thuế: ' + period,
-    dt(date)
-  ];
+  const p1=pdf.getPage(0);
+  const p2=pdf.getPage(1);
 
-  // Xóa cả hai đoạn trước khi ghi văn bản mới.
-  // Lưu ý: cơ chế này phụ thuộc cấu trúc PDF mẫu.
-  for(const target of targets){
-    removeOriginal(
-      pdf,
-      pdf.getPage(target.page),
-      target
+  const pw=regular.widthOfTextAtSize(
+    periodText,MODEL.period.size
+  );
+
+  p1.drawText(periodText,{
+    x:MODEL.period.center-pw/2,
+    y:792-MODEL.period.baseline,
+    size:MODEL.period.size,
+    font:regular,
+    color:PDFLib.rgb(0,0,0)
+  });
+
+  p2.drawText(signingText,{
+    x:MODEL.date.x,
+    y:792-MODEL.date.baseline,
+    size:MODEL.date.size,
+    font:italic,
+    color:PDFLib.rgb(0,0,0)
+  });
+
+  pdf.setProducer('HTKK PDF Editor');
+  const result=await pdf.save({
+    useObjectStreams:false
+  });
+
+  // Kiểm tra khả năng đọc lại nội dung mới.
+  const resultText=await extractText(result);
+
+  if(!normalize(resultText[0]).includes(
+       normalize(periodText)
+     ) ||
+     !normalize(resultText[1]).includes(
+       normalize(signingText)
+     )){
+    throw Error(
+      'Không xác minh được văn bản mới. '+
+      'Không xuất PDF.'
     );
   }
 
-  for(let i=0;i<2;i++){
-
-    const t = targets[i];
-    const page = pdf.getPage(t.page);
-    const font = i ? fItalic : fBold;
-    const size = t.size;
-
-    let x = t.origin[0];
-    const y = page.getHeight()-t.origin[1];
-
-    if(i===0){
-      const width = font.widthOfTextAtSize(
-        txt[i],
-        size
-      );
-
-      x = 280.4-width/2;
-    }
-
-    page.drawText(txt[i],{
-      x,
-      y,
-      size,
-      font,
-      color:PDFLib.rgb(0,0,0)
-    });
-  }
-
-  return await pdf.save({
-    useObjectStreams:false
-  });
+  return result;
 }
 
-function download(bytes,name,type){
+function download(data,name,type){
+  const blob=data instanceof Blob
+    ? data
+    : new Blob([data],{type});
 
-  const blob = bytes instanceof Blob
-    ? bytes
-    : new Blob([bytes],{type});
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-
-  a.href = url;
-  a.download = name;
-
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
   document.body.appendChild(a);
   a.click();
   a.remove();
 
-  setTimeout(()=>{
-    URL.revokeObjectURL(url);
-  },30000);
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
 
-function val(i){
-  return {
-    period:(
-      $('period'+i)?.value ||
-      $('period').value
-    ).trim(),
+async function renderPDF(bytes){
+  pdfjsLib.GlobalWorkerOptions.workerSrc=
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    date:
-      $('date'+i)?.value ||
-      $('date').value
-  };
+  const doc=await pdfjsLib.getDocument({
+    data:new Uint8Array(bytes)
+  }).promise;
+
+  for(let i=1;i<=2;i++){
+    const page=await doc.getPage(i);
+    const viewport=page.getViewport({scale:1.25});
+    const canvas=$('p'+i);
+
+    canvas.width=Math.ceil(viewport.width);
+    canvas.height=Math.ceil(viewport.height);
+
+    await page.render({
+      canvasContext:canvas.getContext('2d'),
+      viewport
+    }).promise;
+  }
+
+  await doc.destroy();
 }
 
-$('run').onclick = async()=>{
-
-  const btn = $('run');
-  btn.disabled = true;
+$('preview').onclick=async()=>{
+  const btn=$('preview');
+  btn.disabled=true;
 
   try{
-
     check();
-
     if(!fileList.length){
-      throw Error('Chưa chọn PDF');
+      throw Error('Chưa chọn PDF.');
     }
 
-    const fs = $('mode').value === 'batch'
+    status('Đang tạo bản xem trước...');
+    const f=await fonts();
+    const v=values(0);
+    const result=await edit(
+      fileList[0],v.period,v.date,f
+    );
+
+    await renderPDF(result);
+    status('Đã tạo bản xem trước hai trang.');
+  }catch(e){
+    status('Lỗi xem trước: '+e.message);
+    console.error(e);
+  }finally{
+    btn.disabled=false;
+  }
+};
+
+$('run').onclick=async()=>{
+  const btn=$('run');
+  btn.disabled=true;
+
+  try{
+    check();
+    if(!fileList.length){
+      throw Error('Chưa chọn PDF.');
+    }
+
+    const selected=$('mode').value==='batch'
       ? fileList
       : fileList.slice(0,1);
 
-    const ff = await fonts();
-    const zip = new JSZip();
+    const f=await fonts();
+    const zip=new JSZip();
+    const errors=[];
+    let ok=0;
 
-    let ok = 0;
-    const errors = [];
-
-    for(let i=0;i<fs.length;i++){
+    for(let i=0;i<selected.length;i++){
+      const file=selected[i];
 
       try{
-
-        const v = val(i);
-
         status(
-          `Đang xử lý ${i+1}/${fs.length}: ${fs[i].name}`
+          `Đang xử lý ${i+1}/${selected.length}: `+
+          file.name
         );
 
-        const data = await edit(
-          fs[i],
-          v.period,
-          v.date,
-          ff
+        const v=values(i);
+        const result=await edit(
+          file,v.period,v.date,f
         );
 
-        const name = fs[i].name.replace(
+        const name=file.name.replace(
           /\.pdf$/i,''
         )+'_da_sua.pdf';
 
-        if($('mode').value === 'one'){
-
-          download(
-            data,
-            name,
-            'application/pdf'
-          );
-
+        if($('mode').value==='one'){
+          download(result,name,'application/pdf');
         }else{
-
-          zip.file(name,data);
+          zip.file(name,result);
         }
 
         ok++;
-
       }catch(e){
-
-        errors.push(
-          fs[i].name+': '+e.message
-        );
+        errors.push(file.name+': '+e.message);
       }
     }
 
-    if($('mode').value === 'batch' && ok){
-
-      const blob = await zip.generateAsync({
+    if($('mode').value==='batch' && ok){
+      const blob=await zip.generateAsync({
         type:'blob'
       });
-
       download(
-        blob,
-        'HTKK_da_sua.zip',
+        blob,'HTKK_da_sua.zip',
         'application/zip'
       );
     }
 
     status(
-      `Hoàn tất: ${ok}/${fs.length}\n`+
+      `Hoàn tất: ${ok}/${selected.length}\n`+
       `Font: Times New Roman\n`+
       errors.join('\n')
     );
-
   }catch(e){
-
     status('Lỗi: '+e.message);
-
+    console.error(e);
   }finally{
-
-    btn.disabled = false;
+    btn.disabled=false;
   }
 };
-
-$('preview').onclick = async()=>{
-
-  try{
-
-    check();
-
-    if(!fileList.length){
-      throw Error('Chưa chọn PDF');
-    }
-
-    const ff = await fonts();
-    const v = val(0);
-
-    const data = await edit(
-      fileList[0],
-      v.period,
-      v.date,
-      ff
-    );
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    const doc = await pdfjsLib.getDocument({
-      data:new Uint8Array(data)
-    }).promise;
-
-    for(let i=1;i<=2;i++){
-
-      const pg = await doc.getPage(i);
-
-      const viewport = pg.getViewport({
-        scale:1.1
-      });
-
-      const canvas = $('p'+i);
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await pg.render({
-        canvasContext:canvas.getContext('2d'),
-        viewport
-      }).promise;
-    }
-
-    status(
-      'Đã tạo bản xem trước bằng Times New Roman.'
-    );
-
-  }catch(e){
-
-    status(
-      'Lỗi xem trước: '+e.message
-    );
-  }
-};
-
 </script>
 </body>
 </html>
