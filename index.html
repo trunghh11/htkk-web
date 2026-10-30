@@ -409,7 +409,7 @@ function removeOriginal(pdf,page,target){
     }
   }
 
-  if(matches !== 1){
+  if(matches < 1){
     throw Error(
       `Không nhận diện duy nhất dòng ${target.text} ` +
       `ở trang ${target.page+1} ` +
